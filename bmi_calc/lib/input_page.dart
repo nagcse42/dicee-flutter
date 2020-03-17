@@ -1,11 +1,18 @@
-import 'dart:ffi';
-
+import 'package:bmi_calc/reusable_card.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'icon_widget.dart';
 
 const bottomContainerHeight = 80.0;
-const Color cardColor = Color(0xFF1D1E33);
+const Color activeCardColor = Color(0xFF1D1E33);
+const Color inctiveCardColor = Color(0xFF111328);
 const Color bottomContainerColor = Color(0xFFEB1555);
+
+enum Gender {
+  MALE,
+  FEMALE,
+  OTHERS
+}
 
 class InputPage extends StatefulWidget {
   @override
@@ -13,6 +20,8 @@ class InputPage extends StatefulWidget {
 }
 
 class InputPageState extends State<InputPage> {
+  Gender selectedGender;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,30 +34,35 @@ class InputPageState extends State<InputPage> {
             child: Row(
               children: <Widget>[
                 Expanded(
-                  child: ReusableCard(
-                    colour: cardColor,
-                    childCard: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Icon(
-                          FontAwesomeIcons.mars,
-                          size: 80.0,
-                        ),
-                        SizedBox(
-                          height: 15.0,
-                        ),
-                        Text(
-                          'MALE',
-                          style: TextStyle(
-                              color: Color(0xFF8D8E98), fontSize: 18.0),
-                        )
-                      ],
+                  child: GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        selectedGender = Gender.MALE;
+                      });
+                    },
+                    child: ReusableCard(
+                      colour: selectedGender == Gender.MALE ? activeCardColor : inctiveCardColor,
+                      childCard: IconWidget(
+                        icon: FontAwesomeIcons.mars,
+                        iconLabel: 'MALE',
+                      ),
                     ),
                   ),
                 ),
                 Expanded(
-                  child: ReusableCard(
-                    colour: cardColor,
+                  child: GestureDetector(
+                    onTap: () {
+                      setState(() {
+                         selectedGender = Gender.FEMALE;
+                      });
+                    },
+                    child: ReusableCard(
+                      colour: selectedGender == Gender.FEMALE ? activeCardColor : inctiveCardColor,
+                      childCard: IconWidget(
+                        icon: FontAwesomeIcons.venus,
+                        iconLabel: 'FEMALE',
+                      ),
+                    ),
                   ),
                 ),
               ],
@@ -56,7 +70,7 @@ class InputPageState extends State<InputPage> {
           ),
           Expanded(
             child: ReusableCard(
-              colour: cardColor,
+              colour: activeCardColor,
             ),
           ),
           Expanded(
@@ -64,12 +78,12 @@ class InputPageState extends State<InputPage> {
               children: <Widget>[
                 Expanded(
                   child: ReusableCard(
-                    colour: cardColor,
+                    colour: activeCardColor,
                   ),
                 ),
                 Expanded(
                   child: ReusableCard(
-                    colour: cardColor,
+                    colour: activeCardColor,
                   ),
                 ),
               ],
@@ -82,24 +96,6 @@ class InputPageState extends State<InputPage> {
             height: bottomContainerHeight,
           )
         ],
-      ),
-    );
-  }
-}
-
-class ReusableCard extends StatelessWidget {
-  final Color colour;
-  final Widget childCard;
-  ReusableCard({@required this.colour, this.childCard});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      child: childCard,
-      margin: EdgeInsets.all(15.0),
-      decoration: BoxDecoration(
-        color: colour,
-        borderRadius: BorderRadius.circular(10.0),
       ),
     );
   }
