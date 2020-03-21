@@ -1,9 +1,14 @@
-import 'package:bmi_calc/reusable_card.dart';
+import 'package:bmi_calc/bmi_calc_factory.dart';
+import 'package:bmi_calc/components/bottom_button.dart';
+import 'package:bmi_calc/components/icon_widget.dart';
+import 'package:bmi_calc/components/reusable_card.dart';
+import 'package:bmi_calc/components/round_icon_button.dart';
+import 'package:bmi_calc/screens/results_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'icon_widget.dart';
-import 'constants.dart';
+
+import '../constants.dart';
 
 enum Gender { MALE, FEMALE, OTHERS }
 
@@ -92,23 +97,25 @@ class InputPageState extends State<InputPage> {
                   ),
                   SliderTheme(
                     data: SliderTheme.of(context).copyWith(
-                      activeTrackColor: Colors.white,
-                      inactiveTrackColor: Color(0xFF8D8E98),
-                      thumbColor: Color(0xFFEB1555),
-                      overlayColor: Color(0x29EB1555),
-                      thumbShape: RoundSliderThumbShape(enabledThumbRadius: 15.0),
-                      overlayShape: RoundSliderOverlayShape(overlayRadius: 30.0)
-                    ),
+                        activeTrackColor: Colors.white,
+                        inactiveTrackColor: Color(0xFF8D8E98),
+                        thumbColor: Color(0xFFEB1555),
+                        overlayColor: Color(0x29EB1555),
+                        thumbShape:
+                            RoundSliderThumbShape(enabledThumbRadius: 15.0),
+                        overlayShape:
+                            RoundSliderOverlayShape(overlayRadius: 30.0)),
                     child: Slider(
-                    value: height.toDouble(),
-                    onChanged: (double newHeight) {
-                      setState(() {
-                        height = newHeight.round();
-                      });
-                    },
-                    min: 120.0,
-                    max: 250.0,
-                  ),),
+                      value: height.toDouble(),
+                      onChanged: (double newHeight) {
+                        setState(() {
+                          height = newHeight.round();
+                        });
+                      },
+                      min: 120.0,
+                      max: 250.0,
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -139,18 +146,20 @@ class InputPageState extends State<InputPage> {
                                 setState(() {
                                   weight--;
                                 });
-                              },),
+                              },
+                            ),
                             RoundIconButton(
                               icon: FontAwesomeIcons.plus,
-                              onClick: (){
+                              onClick: () {
                                 setState(() {
                                   weight++;
                                 });
-                              },),
+                              },
+                            ),
                           ],
                         ),
                       ],
-                      ),
+                    ),
                   ),
                 ),
                 Expanded(
@@ -176,54 +185,40 @@ class InputPageState extends State<InputPage> {
                                 setState(() {
                                   age--;
                                 });
-                              },),
+                              },
+                            ),
                             RoundIconButton(
                               icon: FontAwesomeIcons.plus,
-                              onClick: (){
+                              onClick: () {
                                 setState(() {
                                   age++;
                                 });
-                              },),
+                              },
+                            ),
                           ],
                         ),
                       ],
-                      ),
+                    ),
                   ),
                 ),
               ],
             ),
           ),
-          
-          Container(
-            color: kBottomContainerColor,
-            margin: EdgeInsets.only(top: 10.0),
-            width: double.infinity,
-            height: kBottomContainerHeight,
-          )
+          BottomButton(title: 'CALCULATE',
+          onTap: () {
+                BmiCalcFactory bmiCalcFactory = BmiCalcFactory(weight: weight, height: height);
+                String bmiScore = bmiCalcFactory.calculateBMI();
+                String bmiResult = bmiCalcFactory.getResults();
+                String bmiInterPretation = bmiCalcFactory.getInterpretation();
+                Navigator.push(
+                    context, MaterialPageRoute(builder: (context) => ResultsPage(
+                      bmiResult: bmiResult, bmiScore: bmiScore, bmiInterPretation: bmiInterPretation,
+                    )));
+              },
+          ),
         ],
       ),
     );
   }
 }
 
-
-class RoundIconButton extends StatelessWidget {
-    final IconData icon;
-    final Function onClick;
-    RoundIconButton({this.icon, this.onClick});
-    
-    @override
-    Widget build(BuildContext context) {
-      return RawMaterialButton(
-            child: Icon(icon),
-            onPressed: onClick,
-            elevation: 6.0,
-            constraints: BoxConstraints.tightFor(
-              width: 56.0,
-              height: 56.0
-            ),
-            shape: CircleBorder(),
-            fillColor: Color(0xFF4C4F5E),
-      );
-  }
-}
